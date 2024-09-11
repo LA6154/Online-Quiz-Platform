@@ -1,25 +1,40 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import QuizForm from './components/QuizForm';
+import Quiz from './components/Quiz';
+import Result from './components/Result';
 import './App.css';
 
-function App() {
+const App = () => {
+  const [quizzes, setQuizzes] = useState([]);
+  const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
+  const [score, setScore] = useState(0);
+  const [isQuizComplete, setIsQuizComplete] = useState(false);
+
+  const addQuiz = (newQuiz) => {
+    setQuizzes([...quizzes, newQuiz]);
+  };
+
+  const handleQuizSubmit = (isCorrect) => {
+    if (isCorrect) setScore(score + 1);
+    if (currentQuizIndex < quizzes.length - 1) {
+      setCurrentQuizIndex(currentQuizIndex + 1);
+    } else {
+      setIsQuizComplete(true);
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Online Quiz Platform</h1>
+      {quizzes.length === 0 ? (
+        <QuizForm addQuiz={addQuiz} />
+      ) : isQuizComplete ? (
+        <Result score={score} total={quizzes.length} />
+      ) : (
+        <Quiz quiz={quizzes[currentQuizIndex]} onSubmit={handleQuizSubmit} />
+      )}
     </div>
   );
-}
+};
 
 export default App;
